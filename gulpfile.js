@@ -36,7 +36,7 @@ let paths = {
         dest: outputDir + '/css',
     },
 
-    images: {
+    images_optimized: {
         src: baseDir + '/images/src/**/*',
         dest: outputDir + '/images/dest',
     },
@@ -99,8 +99,7 @@ function lib_scripts() {
         .pipe(concat(paths.jsLibsOutputName))
         .pipe(uglify())
         .pipe(dest(paths.lib_scripts.dest))
-        .pipe(dest(paths.lib_scripts.dest))
-        .pipe(dest('app/js'))
+        .pipe(dest(baseDir + '/js'))
         .pipe(browserSync.stream())
 }
 
@@ -132,12 +131,12 @@ function app_styles() {
         .pipe(browserSync.stream())
 }
 
-function images() {
-    return src(paths.images.src)
-        .pipe(newer(paths.images.dest))
+function images_optimized() {
+    return src(paths.images_optimized.src)
+        .pipe(newer(paths.images_optimized.dest))
+        .pipe(dest(outputDir+'/images/src'))
         .pipe(imagemin())
-        .pipe(dest('app/images/dest'))
-        .pipe(dest(paths.images.dest))
+        .pipe(dest(paths.images_optimized.dest))
 }
 
 function html_files() {
@@ -157,7 +156,7 @@ function fonts() {
 }
 
 function cleanimg() {
-    return del('' + paths.images.dest + '/**/*', {force: true})
+    return del('' + paths.images_optimized.dest + '/**/*', {force: true})
 }
 
 function deploy() {
@@ -180,21 +179,21 @@ function startwatch() {
     watch(baseDir + '/**/*.php', php_files);
     watch(baseDir + '/fonts/**/*', fonts);
     watch(baseDir + '/**/' + preprocessor + '/**/*', app_styles);
-    watch(baseDir + '/**/*.{' + imageswatch + '}', images);
+    watch(baseDir + '/**/*.{' + imageswatch + '}', images_optimized);
     watch(baseDir + '/**/*.{' + fileswatch + '}').on('change', browserSync.reload);
     watch([baseDir + '/**/*.js', '!' + paths.lib_scripts.dest + '/*.min.js'], app_scripts);
 }
 
 exports.browsersync = browsersync;
-exports.assets = series(cleanimg, lib_scripts, images, php_files, html_files, fonts);
+exports.assets = series(cleanimg, lib_scripts, images_optimized, php_files, html_files, fonts);
 //exports.lib_styles = lib_styles;
 exports.lib_scripts = lib_scripts;
 exports.app_styles = app_styles;
 exports.app_scripts = app_scripts;
-exports.images = images;
+exports.images_optimized = images_optimized;
 exports.html_files = html_files;
 exports.php_files = php_files;
 exports.fonts = fonts;
 exports.cleanimg = cleanimg;
 exports.deploy = deploy;
-exports.default = parallel(images, lib_scripts, app_styles, app_scripts, php_files, html_files, fonts, browsersync, startwatch);
+exports.default = parallel(images_optimized, lib_scripts, app_styles, app_scripts, php_files, html_files, fonts, browsersync, startwatch);
