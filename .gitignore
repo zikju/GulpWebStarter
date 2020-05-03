@@ -1,6 +1,6 @@
 /node_modules/
 /.git/
 /.idea/
-/_prod/
+/dist/
 /**/Thumbs.db
 /**/*.DS_Store

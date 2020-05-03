@@ -4,7 +4,7 @@ let preprocessor = 'scss', // Preprocessor
     fileswatch = 'html,htm,txt,json,md,woff2', // List of files extensions for watching & hard reload (comma separated)
     imageswatch = 'jpg,jpeg,png,webp,svg', // List of images extensions for watching & compression (comma separated)
     baseDir = 'app', // Base directory path without «/» at the end
-    outputDir = '_prod', // Base directory path without «/» at the end
+    outputDir = 'dist', // Base directory path without «/» at the end
     online = true; // If «false» - Browsersync will work offline without internet connection
 
 let paths = {
